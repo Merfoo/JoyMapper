@@ -1,0 +1,64 @@
+*
+{
+    margin: 0px;
+    padding: 0px;
+    font-family: sans-serif;
+    border: none;
+    cursor: default;
+    -webkit-user-select: none;
+/*    border: solid blue 2px;*/
+}
+
+body
+{
+    background-color: rgb(222, 222, 222);
+    width: 100%;
+    height: 100%;
+}
+
+.backgroundGray
+{
+    background-color: rgb(204, 204, 204);
+}
+
+.borderGray
+{
+    border: solid rgb(204, 204, 204) 2px;
+}
+
+.buttonBlue
+{
+    background-color: rgb(14, 127, 205);
+}
+
+.buttonRed
+{
+    background-color: rgb(255, 17, 33);
+}
+
+.curvedBorder
+{
+    border-radius: 5px;
+}
+
+/* CONTENT */
+#content
+{
+    position: relative;
+    margin: 0 auto;
+    width: 1090px;
+    height: 625px;
+}
+
+/* TITLE BOX */
+#titleBox
+{
+    position: absolute;
+    width: 313px;
+    height: 50px;
+    font-size: 23px;
+    text-align: center;
+    line-height: 50px;
+    left: 20px;
+    top: 40px;
+}

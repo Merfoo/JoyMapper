@@ -5,7 +5,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <link rel="shortcut icon" href="images/logoThumbnail.png">
-        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+        <link rel="stylesheet" type="text/css" href="css/saveButtons.css"/>
+        <link rel="stylesheet" type="text/css" href="css/gamepadButtons.css"/>
+        <link rel="stylesheet" type="text/css" href="css/controller.css"/>
         <script type="text/javascript" src="js/jquery/jquery-2.1.0.min.js"></script>
         <script type="text/javascript" src="js/blob/Blob.js"></script>
         <script type="text/javascript" src="js/fileSaver/FileSaver.js"></script>
@@ -25,7 +28,27 @@
                 <div id="gamepadButton6" class="gamepadButton borderGray buttonBlue curvedBorder">Gamepad 6</div>
             </div>
             <div id="controllerBox" class="backgroundGray curvedBorder">
-                
+                <div id="assign" class="curvedBorder">Assign</div>
+                <div id="dpad" class="buttonGroup">
+                    <div id="button13" class="buttonTop buttonRed squareButton"></div>
+                    <div id="button14" class="buttonRight buttonRed squareButton"></div>
+                    <div id="button15" class="buttonBottom buttonRed squareButton"></div>
+                    <div id="button16" class="buttonLeft buttonRed squareButton"></div>
+                </div>
+                <div id="circleButtons" class="buttonGroup">
+                    <div id="button1" class="buttonBottom buttonBlue circleButton"></div>
+                    <div id="button2" class="buttonRight buttonBlue circleButton"></div>
+                    <div id="button3" class="buttonLeft buttonBlue circleButton"></div>
+                    <div id="button4" class="buttonTop buttonBlue circleButton"></div>
+                </div>
+                <div id="triggerButtonsRight" class="buttonGroup">
+                    <div id="button8" class="triggerButton buttonRed"></div>
+                    <div id="button6" class="bumperButton buttonRed"></div>
+                </div>
+                <div id="triggerButtonsLeft" class="buttonGroup">
+                    <div id="button5" class="triggerButton buttonRed"></div>
+                    <div id="button7" class="bumperButton buttonRed"></div>
+                </div>
             </div>
         </div>
     </body>

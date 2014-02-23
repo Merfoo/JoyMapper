@@ -1,0 +1,144 @@
+/* CONTROLLER */
+#controllerBox
+{
+    position: absolute;
+    width: 537px;
+    height: 513px;
+    top: 40px;
+    left: 360px;
+}
+
+.squareButton
+{
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 36px;
+    border-radius: 2px;
+}
+
+.bumperButton
+{
+    position: absolute;
+    width: 100%;
+    height: 25px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 50px;
+    bottom: 0px;
+    left: 50%;
+    margin-left: -50%;
+    border-radius: 2px;
+}
+
+.triggerButton
+{
+    position: absolute;
+    width: 32px;
+    height: 70px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 100px;
+    top: 20px;
+    left: 50%;
+    margin-left: -16px;
+    border-radius: 2px;
+}
+
+.circleButton
+{
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 36px;
+    border-radius: 50%;
+}
+
+.stick
+{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 200px;
+    border-radius: 50%;
+}
+
+.buttonTop
+{
+    top: 0px;
+    left: 50%;
+    margin-left: -18px;
+}
+
+.buttonRight
+{
+    top: 50%;
+    right: 0px;
+    margin-top: -18px;
+}
+
+.buttonBottom
+{
+    bottom: 0px;
+    left: 50%;
+    margin-left: -18px;
+}
+
+.buttonLeft
+{
+    top: 50%;
+    left: 0px;
+    margin-top: -18px;
+}
+
+.buttonGroup
+{
+    position: absolute;
+    width: 130px;
+    height: 130px;
+}
+
+#assign
+{
+    position: absolute;
+    width: 110px;
+    height: 33px;
+    top: 40px;
+    left: 50%;
+    margin-left: -55px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 33px;
+    background-color: rgb(230, 230, 230);
+    border: solid rgb(198, 198, 198) 2px;
+}
+
+#dpad
+{
+    top: 350px;
+    left: 30px;
+}
+
+#circleButtons
+{
+    top: 175px;
+    right: 30px; 
+}
+
+#triggerButtonsRight
+{
+    top: 0px;
+    right: 30px;
+}
+
+#triggerButtonsLeft
+{
+    top: 0px;
+    left: 30px;
+}

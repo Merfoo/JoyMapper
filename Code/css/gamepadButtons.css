@@ -1,0 +1,49 @@
+/* GAMEPAD BUTTONS */
+.gamepadButton
+{
+    position: absolute;
+    width: 150px;
+    height: 44px;
+    font-size: 23px;
+    text-align: center;
+    line-height: 44px;
+}
+
+#gamepadButtons
+{
+    position: absolute;
+    height: 550px;
+    top: 40px;
+    left: auto;
+    right: 170px;
+}
+
+#gamepadButton1
+{
+    top: 0%;
+}
+
+#gamepadButton2
+{
+    top: 16.66%;
+}
+
+#gamepadButton3
+{
+    top: 33.33%;
+}
+
+#gamepadButton4
+{
+    top: 50%;
+}
+
+#gamepadButton5
+{
+    top: 66.66%;
+}
+
+#gamepadButton6
+{
+    top: 84.33%;
+}
