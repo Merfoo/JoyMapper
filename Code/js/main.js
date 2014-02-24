@@ -1,3 +1,6 @@
+var $buttons;
+var sticks;
+
 // When document is loaded call init function
 $(document).ready(init);
 
@@ -14,13 +17,34 @@ function init()
       alert('The File APIs are not fully supported in this browser.');
   
     initDomRelated();
+    initJoysticks();
     reset();
 }
 
 // Initializes everything related to dom elements
 function initDomRelated()
 {
+    $buttons = $("input[type=text]");
     
+    for(var i = 0; i < $buttons.length; i++)
+    {
+        for(var j = 0; j < $buttons.length - 1; j++)
+        {
+            if(convertToNumber($buttons[j].id.substring("button".length)) > convertToNumber($buttons[j + 1].id.substring("button".length)))
+            {
+                var tmp = $buttons[j];
+                $buttons[j] = $buttons[j + 1];
+                $buttons[j + 1] = tmp;
+            }
+        }
+    }
+}
+
+// Inits the joysticks
+function initJoysticks()
+{
+    sticks = navigator.webkitGetGamepads();
+    console.log(sticks);
 }
 
 // Resets everything
@@ -32,7 +56,7 @@ function reset()
 // Gets all the data, processes it, and saves it
 function processInputData()
 {
-    var fileData = ""
+    var fileData = "";
     writeToFile(fileData, "gamepadMap.csv");
 }
 
