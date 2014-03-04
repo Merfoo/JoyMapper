@@ -84,8 +84,7 @@ function main()
         {
             if(sticks[stickId - 1].getButton(buttonIndex))
             {
-                print("Button: " + (buttonIndex + 1));
-                //$buttons[buttonIndex].css({"opacity" : "0.5"});
+                $("#" + $buttons[buttonIndex].id).animate({"opacity" : "0.5"});
                 buttonId = buttonIndex + 1;
                 assignMode = false;
                 keyMode = true;
@@ -97,7 +96,7 @@ function main()
     if(keyMode && keyGotPressed)
     {
         sticks[stickId - 1].setKey(buttonId - 1, $buttons[buttonId - 1].value = pressedKey);
-        //$buttons[buttonIndex].css({"opacity" : "1"});
+        $("#" + $buttons[buttonId - 1].id).animate({"opacity" : "1"});
         assignUnclicked();
     }
     
