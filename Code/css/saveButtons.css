@@ -23,3 +23,8 @@
     left: 20px;
     top: 450px;
 }
+
+#openSavedFile
+{
+    display: none;
+}

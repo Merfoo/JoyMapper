@@ -38,6 +38,8 @@ function initDomRelated()
     $("[class*='gamepadButton']").click(function(e){ gamepadButtonClicked(e.target.id); });
     $("#assign").click(assignClicked);
     $("#saveSettings").click(generateAHKScript);
+    $("#openSave").click(function(){$("#openSavedFile").click();});
+    $("#openSavedFile").change(getLoadedFiles);
     $(document).keyup(keyupEventHandler);
     
     $buttons = $("input[type=text]");
@@ -46,7 +48,7 @@ function initDomRelated()
     {
         for(var j = 0; j < $buttons.length - 1; j++)
         {
-            if(convertToNumber($buttons[j].id.substring("button".length)) > convertToNumber($buttons[j + 1].id.substring("button".length)))
+            if(parseInt($buttons[j].id.substring("button".length)) > parseInt($buttons[j + 1].id.substring("button".length)))
             {
                 var tmp = $buttons[j];
                 $buttons[j] = $buttons[j + 1];
@@ -56,7 +58,7 @@ function initDomRelated()
     }
     
     for(var i = 0; i < $buttons.length; i++)
-        $buttons[i].value = i + 1;
+        $buttons[i].value = "";
 }
 
 // Inits the joysticks
@@ -76,8 +78,6 @@ function main()
 {
     updateJoysticks();
     
-    //$buttons[0].focus();
-    
     if(assignMode)
     {
         for(var buttonIndex = 0; buttonIndex < $buttons.length; buttonIndex++)
@@ -85,6 +85,7 @@ function main()
             if(sticks[stickId - 1].getButton(buttonIndex))
             {
                 print("Button: " + (buttonIndex + 1));
+                //$buttons[buttonIndex].css({"opacity" : "0.5"});
                 buttonId = buttonIndex + 1;
                 assignMode = false;
                 keyMode = true;
@@ -95,10 +96,9 @@ function main()
     
     if(keyMode && keyGotPressed)
     {
-        $buttons[buttonId - 1].value = pressedKey;
-        keyMode = false;
-        keyGotPressed = false;
-        $("#assign").css({"opacity" : "1"});
+        sticks[stickId - 1].setKey(buttonId - 1, $buttons[buttonId - 1].value = pressedKey);
+        //$buttons[buttonIndex].css({"opacity" : "1"});
+        assignUnclicked();
     }
     
     window.webkitRequestAnimationFrame(main);
@@ -116,21 +116,21 @@ function updateJoysticks()
         if(tmpStick)
         {
             // All non-joystick stick buttons
-            for(var buttonIndex = 0; buttonIndex < tmpStick.buttons.length; buttonIndex++)
+            for(var buttonIndex = 0; buttonIndex < tmpStick.buttons.length && buttonIndex < $buttons.length; buttonIndex++)
                 sticks[stickIndex].setButton(buttonIndex, tmpStick.buttons[buttonIndex] > pressedThreshold);
             
             /* Subtracting 1 from each button value because array index are 0-based */
             // Left stick
-            sticks[stickIndex].setButton(17 - 1, tmpStick.axes[0] > pressedThreshold);   // Button 17
-            sticks[stickIndex].setButton(19 - 1, tmpStick.axes[0] < -pressedThreshold);  // Button 19
-            sticks[stickIndex].setButton(18 - 1, tmpStick.axes[1] > pressedThreshold);   // Button 18
-            sticks[stickIndex].setButton(20 - 1, tmpStick.axes[1] < -pressedThreshold);  // Button 20
-            
-            // Right stick
-            sticks[stickIndex].setButton(21 - 1, tmpStick.axes[2] > pressedThreshold);   // Button 21
-            sticks[stickIndex].setButton(23 - 1, tmpStick.axes[2] < -pressedThreshold);  // Button 23
-            sticks[stickIndex].setButton(22 - 1, tmpStick.axes[3] > pressedThreshold);   // Button 22
-            sticks[stickIndex].setButton(24 - 1, tmpStick.axes[3] < -pressedThreshold);  // Button 24
+//            sticks[stickIndex].setButton(17 - 1, tmpStick.axes[0] > pressedThreshold);   // Button 17
+//            sticks[stickIndex].setButton(19 - 1, tmpStick.axes[0] < -pressedThreshold);  // Button 19
+//            sticks[stickIndex].setButton(18 - 1, tmpStick.axes[1] > pressedThreshold);   // Button 18
+//            sticks[stickIndex].setButton(20 - 1, tmpStick.axes[1] < -pressedThreshold);  // Button 20
+//            
+//            // Right stick
+//            sticks[stickIndex].setButton(21 - 1, tmpStick.axes[2] > pressedThreshold);   // Button 21
+//            sticks[stickIndex].setButton(23 - 1, tmpStick.axes[2] < -pressedThreshold);  // Button 23
+//            sticks[stickIndex].setButton(22 - 1, tmpStick.axes[3] > pressedThreshold);   // Button 22
+//            sticks[stickIndex].setButton(24 - 1, tmpStick.axes[3] < -pressedThreshold);  // Button 24
         }
     }
 }
@@ -152,8 +152,14 @@ function keyupEventHandler(e)
         keyGotPressed = true;
     }
     
-    if(!assignMode && e.keyCode === keyCodes.enter)
-        assignClicked();
+    if(e.keyCode === keyCodes.enter)
+    {
+        if(!assignMode)
+            assignClicked();
+        
+        else
+            assignUnclicked();
+    }
 }
 
 // Callback function when the "assign" div has been pressed
@@ -163,23 +169,44 @@ function assignClicked()
     $("#assign").css({"opacity" : "0.5"});
 }
 
+// Sets the "assign" div back to normal
+function assignUnclicked()
+{
+    assignMode = false;
+    keyMode = false;
+    keyGotPressed = false;
+    $("#assign").css({"opacity" : "1"});
+}
+
+// Callback function when "gamepadButtonX" div has been pressed
 function gamepadButtonClicked(id)
 {
     print(id);
     $("[class*='gamepadButton']").css({"opacity" : "1"}); 
     $("#" + id).css({"opacity" : "0.5"});
     stickId = id[id.length - 1] - 0; // "- 0" makes it a number
+    
+    updateDOMButtons();
+}
+
+// Updates the buttons in the application visually
+function updateDOMButtons()
+{
+    for(var buttonIndex = 0; buttonIndex < $buttons.length; buttonIndex++)
+        $buttons[buttonIndex].value = sticks[stickId - 1].getKey(buttonIndex);
 }
 
 // Gets all the data, processes it, and saves it
 function generateAHKScript()
 {
-    print("Hello, got pressed Button");
+    print("generateAHKScript() called");
     var fileData = "";
     
-    for(var buttonIndex = 0; buttonIndex < $buttons.length; buttonIndex++)
-        fileData += stickId + "Joy" + (buttonIndex + 1) + "::Send " + $buttons[buttonIndex].value + "\n";
-
+    for(var stickIndex = 0; stickIndex < maxSticks; stickIndex++)
+        for(var buttonIndex = 0; buttonIndex < $buttons.length; buttonIndex++)
+            if((sticks[stickIndex].getKey(buttonIndex) + "").length > 0)
+                fileData += (stickIndex + 1) + "Joy" + (buttonIndex + 1) + "::Send " + sticks[stickIndex].getKey(buttonIndex) + "\n";
+    
     writeToFile(fileData, "scoutingJoystick.ahk");
 }
 
@@ -196,43 +223,34 @@ function getLoadedFiles(evt)
     print("OPEN SAVE BUTTON CLICKED");
     
     var files = evt.target.files;
-    var data = "";
-    var filesLoaded = 0;
-    
-    for (var i = 0, f; (f = files[i]); i++)
-    {   
-        var reader = new FileReader();
+    var reader = new FileReader();
 
-        reader.onload = function()
-        {
-            data += this.result;
-            
-            if(++filesLoaded === files.length)
-                processLoadedData(split(data, ","));
-        };
+    reader.onload = function()
+    {
+        processLoadedData(this.result);
+    };
 
-        reader.readAsText(f);
-    }
+    reader.readAsText(files[0]);
 }
 
 // Process and write to master file
 function processLoadedData(data)
 {
     print("DATA LOADED FROM SAVED FILE: " + data.length);
-    print(data);
+    print(split(data, "\n"));
+    var splitData = split(data, "\n");
     
-}
-
-// Removes commas from strings
-function removeCommas(data)
-{
-    var ret = "";
+    for(var splitIndex = 0; splitIndex < splitData.length; splitIndex++)
+    {
+        // Ex data = '1Joy1::Send a', When joystick 1 button 1 is pressed, send letter 'a'
+        var curData = splitData[splitIndex];
+        var joyIndex = parseInt(curData[0]) - 1; // Joystick index
+        var buttonIndex = parseInt(curData.substring(curData.indexOf("y") + 1, curData.indexOf(":"))) - 1; // Button index
+        var letter = curData[curData.length - 1]; // Get the letter
+        sticks[joyIndex].setKey(buttonIndex, letter);
+    }
     
-    for(var i = 0; i < data.length; i++)
-        if(data[i] !== ',')
-            ret += data[i];
-    
-    return ret;
+    updateDOMButtons();
 }
 
 // Splits the string
@@ -255,51 +273,6 @@ function split(str, delim)
     return ret;
 }
 
-// Converts the string to a number, retursn 0 if can't find number
-function convertToNumber(str)
-{
-    var ret = parseInt(str);
-    
-    if(!ret)
-    {
-        print("ERROR, CAN'T CONVERT '" + str + "' TO A NUMBER.");
-        ret = 0;
-    }
-    
-    return ret;
-}
-
-// Converts rgb to hex
-function rgbToHex(r, g, b)
-{
-    var red = r.toString(16);
-    var green = g.toString(16);
-    var blue = b.toString(16);
-    
-    if(red.length < 2)
-        red = "0" + red;
-    
-    if(green.length < 2)
-        green = "0" + green;
-    
-    if(blue.length < 2)
-        blue = "0" + blue;
-
-    return "#" + red + green + blue;
-}
-
-// Removes new line character
-function removeNewLine(data)
-{
-    var ret = "";
-    
-    for(var i = 0; i < data.length; i++)
-        if(data[i] !== "\n")
-            ret += data[i];
-    
-    return ret;
-}
-
 // Python version of printing, too lazy to type "console.log" over and over again
 function print(str)
 {
@@ -307,12 +280,18 @@ function print(str)
 }
 
 // CLASSES
+var stupid = 0;
 function Joystick()
 {
+    stupid++;
     this.buttons = [$buttons.length];
+    this.keys = [$buttons.length];
     
     for(var i = 0; i < $buttons.length; i++)
+    {
         this.buttons[i] = false;
+        this.keys[i] = "";
+    }
 }
 
 Joystick.prototype.setButton = function(index, value)
@@ -323,4 +302,14 @@ Joystick.prototype.setButton = function(index, value)
 Joystick.prototype.getButton = function(index)
 {
     return this.buttons[index];
+};
+
+Joystick.prototype.setKey = function(index, value)
+{
+    this.keys[index] = value;
+};
+
+Joystick.prototype.getKey = function(index)
+{
+    return this.keys[index];
 };
