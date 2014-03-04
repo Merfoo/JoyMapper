@@ -4,7 +4,6 @@ var pressedThreshold = 0.25;
 var stickId = 1;
 var buttonId = 1;
 var pressedKey;
-var rawSticks;
 var sticks;
 var assignMode = false;
 var keyMode = false;
@@ -40,6 +39,7 @@ function initDomRelated()
     $("#saveSettings").click(generateAHKScript);
     $("#openSave").click(function(){$("#openSavedFile").click();});
     $("#openSavedFile").change(getLoadedFiles);
+    $("input[type=text]").keydown(textInputKeydownEventHandler);
     $(document).keyup(keyupEventHandler);
     
     $buttons = $("input[type=text]");
@@ -64,7 +64,6 @@ function initDomRelated()
 // Inits the joysticks
 function initJoysticks()
 {
-    rawSticks = navigator.webkitGetGamepads();
     sticks = new Array(maxSticks);
     
     for(var i = 0; i < sticks.length; i++)
@@ -106,7 +105,7 @@ function main()
 // Updates joystick
 function updateJoysticks()
 {
-    rawSticks = navigator.webkitGetGamepads();
+    var rawSticks = navigator.webkitGetGamepads();
     
     for(var stickIndex = 0; stickIndex < rawSticks.length; stickIndex++)
     {
@@ -138,6 +137,13 @@ function updateJoysticks()
 function reset()
 {
     gamepadButtonClicked("gamepadButton1");
+}
+
+// Handles keydown event for text input
+function textInputKeydownEventHandler(e)
+{
+    $("#" + e.target.id).val(String.fromCharCode(e.keyCode).toLowerCase());
+    e.preventDefault();
 }
 
 // Handles keyup event
