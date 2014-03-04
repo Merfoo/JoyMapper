@@ -142,7 +142,10 @@ function reset()
 // Handles keydown event for text input
 function textInputKeydownEventHandler(e)
 {
-    $("#" + e.target.id).val(String.fromCharCode(e.keyCode).toLowerCase());
+    letter = String.fromCharCode(e.keyCode).toLowerCase();
+    buttonId = e.target.id.substring("button".length) - 0;
+    $("#" + e.target.id).val(letter);
+    sticks[stickId - 1].setKey(buttonId - 1, letter);
     e.preventDefault();
 }
 
