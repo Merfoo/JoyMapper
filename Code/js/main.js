@@ -37,8 +37,8 @@ function initDomRelated()
     $("[class*='gamepadButton']").click(function(e){ gamepadButtonClicked(e.target.id); });
     $("#assign").click(assignClicked);
     $("#saveSettings").click(generateAHKScript);
-    $("#openSave").click(function(){$("#openSavedFile").click();});
-    $("#openSavedFile").change(getLoadedFiles);
+    $("#openSave").click(function(){ $("#openSavedFile").click(); });
+    $("#openSavedFile").change(getLoadedFile);
     $("input[type=text]").keydown(textInputKeydownEventHandler);
     $(document).keyup(keyupEventHandler);
     
@@ -56,9 +56,6 @@ function initDomRelated()
             }
         }
     }
-    
-    for(var i = 0; i < $buttons.length; i++)
-        $buttons[i].value = "";
 }
 
 // Inits the joysticks
@@ -96,7 +93,7 @@ function main()
     {
         sticks[stickId - 1].setKey(buttonId - 1, $buttons[buttonId - 1].value = pressedKey);
         $("#" + $buttons[buttonId - 1].id).animate({"opacity" : "1"});
-        assignUnclicked();
+        assignClicked();
     }
     
     window.webkitRequestAnimationFrame(main);
@@ -144,8 +141,8 @@ function textInputKeydownEventHandler(e)
 {
     letter = String.fromCharCode(e.keyCode).toLowerCase();
     buttonId = e.target.id.substring("button".length) - 0;
-    $("#" + e.target.id).val(letter);
     sticks[stickId - 1].setKey(buttonId - 1, letter);
+    updateDOMButtons();
     e.preventDefault();
 }
 
@@ -161,29 +158,25 @@ function keyupEventHandler(e)
     }
     
     if(e.keyCode === keyCodes.enter)
-    {
-        if(!assignMode)
-            assignClicked();
-        
-        else
-            assignUnclicked();
-    }
+        assignClicked();
 }
 
 // Callback function when the "assign" div has been pressed
 function assignClicked()
 {
-    assignMode = true;
-    $("#assign").css({"opacity" : "0.5"});
-}
-
-// Sets the "assign" div back to normal
-function assignUnclicked()
-{
-    assignMode = false;
-    keyMode = false;
-    keyGotPressed = false;
-    $("#assign").css({"opacity" : "1"});
+    if(!assignMode)
+    {
+        assignMode = true;
+        $("#assign").css({"opacity" : "0.5"});
+    }
+    
+    else
+    {
+        assignMode = false;
+        keyMode = false;
+        keyGotPressed = false;
+        $("#assign").css({"opacity" : "1"});
+    }
 }
 
 // Callback function when "gamepadButtonX" div has been pressed
@@ -226,7 +219,7 @@ function writeToFile(data, fileName)
 }
 
 // Reads all files
-function getLoadedFiles(evt)
+function getLoadedFile(evt)
 {
     print("OPEN SAVE BUTTON CLICKED");
     
@@ -288,10 +281,8 @@ function print(str)
 }
 
 // CLASSES
-var stupid = 0;
 function Joystick()
 {
-    stupid++;
     this.buttons = [$buttons.length];
     this.keys = [$buttons.length];
     
