@@ -8,7 +8,9 @@ var sticks;
 var assignMode = false;
 var keyMode = false;
 var keyGotPressed = false;
-var keyCodes = { enter: 13 };
+var keyCodes = { enter: 13, tilda: 192};
+var addOffsetMode = false;
+var stickIdOffset = 0;
 
 // When document is loaded call init function
 $(document).ready(init);
@@ -159,6 +161,17 @@ function keyupEventHandler(e)
     
     if(e.keyCode === keyCodes.enter)
         assignClicked();
+    
+    if(e.keyCode === keyCodes.tilda)
+    {
+        addOffsetMode = !addOffsetMode;
+        stickIdOffset = 0;
+        
+        if(addOffsetMode)
+            stickIdOffset = 2;
+        
+        print(stickIdOffset + " " + addOffsetMode);
+    }
 }
 
 // Callback function when the "assign" div has been pressed
@@ -206,7 +219,7 @@ function generateAHKScript()
     for(var stickIndex = 0; stickIndex < maxSticks; stickIndex++)
         for(var buttonIndex = 0; buttonIndex < $buttons.length; buttonIndex++)
             if((sticks[stickIndex].getKey(buttonIndex) + "").length > 0)
-                fileData += (stickIndex + 1) + "Joy" + (buttonIndex + 1) + "::Send " + sticks[stickIndex].getKey(buttonIndex) + "\n";
+                fileData += (stickIndex + 1 + stickIdOffset) + "Joy" + (buttonIndex + 1) + "::Send " + sticks[stickIndex].getKey(buttonIndex) + "\n";
     
     writeToFile(fileData, "scoutingJoystick.ahk");
 }
@@ -240,12 +253,16 @@ function processLoadedData(data)
     print("DATA LOADED FROM SAVED FILE: " + data.length);
     print(split(data, "\n"));
     var splitData = split(data, "\n");
+    var offset = 0;
+    
+    if(parseInt(splitData[0][0]) === 3)
+        offset = 2;
     
     for(var splitIndex = 0; splitIndex < splitData.length; splitIndex++)
     {
         // Ex data = '1Joy1::Send a', When joystick 1 button 1 is pressed, send letter 'a'
         var curData = splitData[splitIndex];
-        var joyIndex = parseInt(curData[0]) - 1; // Joystick index
+        var joyIndex = parseInt(curData[0]) - 1 - offset; // Joystick index
         var buttonIndex = parseInt(curData.substring(curData.indexOf("y") + 1, curData.indexOf(":"))) - 1; // Button index
         var letter = curData[curData.length - 1]; // Get the letter
         sticks[joyIndex].setKey(buttonIndex, letter);
